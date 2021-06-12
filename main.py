@@ -21,3 +21,10 @@ def rotate():  # סיבוב
 
 def remove_hidden_surface():  # הסרת משטחים נסתרים
     pass
+
+
+class Point_3D:
+    def __init__(self, x, y, z) -> None:
+        self.x = x
+        self.y = y
+        self.z = z
