@@ -14,7 +14,7 @@ def oblique_projections():  # הטלה אלכסונית
     # note to self: we need to ask the user for an angle!!
     pass
 
-def scale_up(p, Sx, Sy, Sz):  # סילום
+def scale(p, Sx, Sy, Sz):  # סילום
     """
     We can perform scaling using the following matrix:
     [x', y', z', 1] = [x, y, z, 1] * |Sx  0   0   0|
@@ -37,8 +37,8 @@ def scale_up(p, Sx, Sy, Sz):  # סילום
         print("Scaling factors must be bigger than 0!!")
         ############ print error message to GUI!!!!!!!!!!!
 
-def scale_down():
-    pass
+# def scale_down():
+#     pass
 
 def rotate_x_axis(p, theta):  # סיבוב
     # note to self: we need to ask the user for an angle!!
