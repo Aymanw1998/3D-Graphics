@@ -1,3 +1,5 @@
+from math import sin, cos
+
 ################# Transformations######################
 
 def parallel_projection():  # הטלה מקבילית
@@ -13,6 +15,15 @@ def oblique_projections():  # הטלה אלכסונית
     pass
 
 def scale_up():  # סילום
+    """
+    We can perform scaling using the following matrix:
+    [x', y', z', 1] = [x, y, z, 1] * |Sx  0   0   0|
+                                     |0   Sy  0   0|
+                                     |0   0   Sz  0|
+                                     |0   0   0   1|
+
+    The scaling factors, (Sx, Sy, Sz), are positive numbers.
+    """
     pass
 
 def scale_down():
@@ -20,12 +31,51 @@ def scale_down():
 
 def rotate_x_axis():  # סיבוב
     # note to self: we need to ask the user for an angle!!
+    """
+    Theta is the angle of the rotation.
+    We can write the equations of the 3d rotation along the x-axis using the following matrix:
+    [x', y', z', 1] = [x, y, z, 1] * |             1             0             0             0|
+                                     |             0         cos_theta     sin_theta         0|
+                                     |             0         -sin_theta    cos_theta         0|
+                                     |             0             0             0             1|
+
+    So the equations will be:
+    y' = y * cos_theta - z * sin_theta
+    z' = y * sin_theta + z * cos_theta
+    x' = x
+    """
     pass
 
 def rotate_y_axis():
+    """
+    Theta is the angle of the rotation.
+    We can write the equations of the 3d rotation along the y-axis using the following matrix:
+    [x', y', z', 1] = [x, y, z, 1] * |         cos_theta         0         -sin_theta        0|
+                                     |             0             1             0             0|
+                                     |         sin_theta         0         cos_theta         0|
+                                     |             0             0             0             1|
+
+    So the equations will be:
+    z' = z * cos_theta - x * sin_theta
+    x' = z * sin_theta + x * cos_theta
+    y' = y
+    """
     pass
 
 def rotate_z_axis():
+    """
+    Theta is the angle of the rotation.
+    We can write the equations of the 3d rotation along the z-axis using the following matrix:
+    [x', y', z', 1] = [x, y, z, 1] * | cos_theta   sin_theta       0         0|
+                                     |-sin_theta   cos_theta       0         0|
+                                     |         0         0         1         0|
+                                     |         0         0         0         1|
+
+    So the equations will be:
+    x' = x * cos_theta - y * sin_theta
+    y' = x * sin_theta + y * cos_theta
+    z' = z
+    """
     pass
 
 def remove_hidden_surface():  # הסרת משטחים נסתרים
