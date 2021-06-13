@@ -9,7 +9,7 @@
 # help function
 
 def parallel_projection():  # הטלה מקבילית
-    # we need to ask the user for an angle!!
+    # note to self: we need to ask the user for an angle!!
     pass
 
 def perspective_projection():  # הטלה פרספקטיבית
@@ -17,15 +17,23 @@ def perspective_projection():  # הטלה פרספקטיבית
     pass
 
 def oblique_projections():  # הטלה אלכסונית
-    # we need to ask the user for an angle!!
+    # note to self: we need to ask the user for an angle!!
     pass
 
-def scale():  # סילום
+def scale_up():  # סילום
     pass
 
-def rotate():  # סיבוב
-    # we need to ask the user for an angle!!
-    # we need to ask the user for an axis!!
+def scale_down():
+    pass
+
+def rotate_x_axis():  # סיבוב
+    # note to self: we need to ask the user for an angle!!
+    pass
+
+def rotate_y_axis():
+    pass
+
+def rotate_z_axis():
     pass
 
 def remove_hidden_surface():  # הסרת משטחים נסתרים
