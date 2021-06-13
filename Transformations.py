@@ -86,7 +86,12 @@ def rotate_z_axis(p, theta):
     y' = x * sin_theta + y * cos_theta
     z' = z
     """
-    pass
+    x_prime = p.x * cos(theta) - p.y * sin(theta)
+    y_prime = p.x * sin(theta) + p.y * cos(theta)
+    z_prime = p.z
+
+    transformed_point = Polygon.Vertex(x_prime, y_prime, z_prime)
+    return transformed_point
 
 def remove_hidden_surface():  # הסרת משטחים נסתרים
     pass
