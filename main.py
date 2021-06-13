@@ -72,6 +72,7 @@ def calculate_visability():  # help function for surface removal
     pass
 
 def calculate_normal_vector():  # help function for surface removal
+    """To perform the visibility calculation in 'calculate_visibility' we must calculate the normal vector."""
     pass
 
 def sort_by_z():  # so we know which object is the farthest away so we can draw it first
