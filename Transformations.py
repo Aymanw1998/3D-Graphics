@@ -89,8 +89,8 @@ def rotate_z_axis(p, theta):
     We can write the equations of the 3d rotation along the z-axis using the following matrix:
     [x', y', z', 1] = [x, y, z, 1] * | cos_theta   sin_theta       0         0|
                                      |-sin_theta   cos_theta       0         0|
-                                     |         0         0         1         0|
-                                     |         0         0         0         1|
+                                     |     0             0         1         0|
+                                     |     0             0         0         1|
 
     So the equations will be:
     x' = x * cos_theta - y * sin_theta
