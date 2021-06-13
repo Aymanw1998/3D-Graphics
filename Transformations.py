@@ -43,6 +43,7 @@ def calculate_normal_vector():  # help function for surface removal
     pass
 
 def sort_by_z():  # so we know which object is the farthest away so we can draw it first
+    # ??????? not sure if it belongs in this file, maybe it should be in view?
     """The purpose of this method is to arrage the objects by their z-axis value, so we know which object is the farthest away
     and which is closest to our eyes.
     The objects will be drawn to the screen by this order: first we draw the farthest object and work our way to the closest one."""
