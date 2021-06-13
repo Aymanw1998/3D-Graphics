@@ -105,6 +105,11 @@ def rotate_z_axis(p, theta):
     return transformed_point
 
 def remove_hidden_surface():  # הסרת משטחים נסתרים
+    """
+    In a right-hand coordinate system, a vertex in space is considered to be part of the back face if the following equation is true:
+    Ax' + By' + Cz' + D < 0
+    when (x', y', z') is our viewing point.
+    """
     pass
 
 
