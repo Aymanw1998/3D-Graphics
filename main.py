@@ -55,6 +55,8 @@ class Edges:
         pass
 
 class Polygon:
+    """A polygon is composed of a number of edges. Since we are dealing with a cube and a pyramid, that number can either be
+    3 or 4."""
     def __init__(self, e1, e2, e3, e4=None) -> None:
         self.e1 = e1
         self.e2 = e2
@@ -66,6 +68,7 @@ edges_list = []
 polygon_list = []
 
 def calculate_visability():  # help function for surface removal
+    """We need to know the visibility of an object to help us remove hidden surfaces."""
     pass
 
 def calculate_normal_vector():  # help function for surface removal
