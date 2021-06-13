@@ -1,5 +1,5 @@
 from math import sin, cos
-
+import Polygon
 ################# Transformations######################
 
 def parallel_projection():  # הטלה מקבילית
@@ -29,7 +29,7 @@ def scale_up():  # סילום
 def scale_down():
     pass
 
-def rotate_x_axis():  # סיבוב
+def rotate_x_axis(p, theta):  # סיבוב
     # note to self: we need to ask the user for an angle!!
     """
     Theta is the angle of the rotation.
@@ -44,9 +44,14 @@ def rotate_x_axis():  # סיבוב
     z' = y * sin_theta + z * cos_theta
     x' = x
     """
-    pass
+    y_prime = p.y * cos(theta) - p.z * sin(theta)
+    z_prime = p.y * sin(theta) + p.z * cos(theta)
+    x_prime = p.x
 
-def rotate_y_axis():
+    transformed_point = Polygon.Vertex(x_prime, y_prime, z_prime)
+    return transformed_point
+
+def rotate_y_axis(p, theta):
     """
     Theta is the angle of the rotation.
     We can write the equations of the 3d rotation along the y-axis using the following matrix:
@@ -60,9 +65,14 @@ def rotate_y_axis():
     x' = z * sin_theta + x * cos_theta
     y' = y
     """
-    pass
+    z_prime = p.z * cos(theta) - p.x * sin(theta)
+    x_prime = p.z * sin(theta) + p.x * cos(theta)
+    y_prime = p.y
 
-def rotate_z_axis():
+    transformed_point = Polygon.Vertex(x_prime, y_prime, z_prime)
+    return transformed_point
+
+def rotate_z_axis(p, theta):
     """
     Theta is the angle of the rotation.
     We can write the equations of the 3d rotation along the z-axis using the following matrix:
