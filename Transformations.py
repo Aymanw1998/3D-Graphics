@@ -1,10 +1,34 @@
+import math
+import numpy as np
 from math import sin, cos
-import Polygon
+from Polygon import Vertex, Polygon
 ################# Transformations######################
+def matrix_Multiplication(matrix1, matrix2):
+    result=[]
+    for j in range(len(matrix2[0])):
+        sum = 0
+        for k in range(len(matrix2)):
+            sum += matrix1[k] * matrix2[k][j]
+        result.append(sum)
+    return result
 
-def parallel_projection():  # הטלה מקבילית
+def parallel_projection(list_polygon, list_point):  # הטלה מקבילית
     # note to self: we need to ask the user for an angle!!
-    pass
+    # 90
+
+    new_list_point = []
+    cos_number: float = math.cos(90 * (math.pi / 180))
+    sin_number: float = math.sin(90 * (math.pi / 180))
+
+    #const_matrix = [[ 1, 0, 0, 0 ], [ 0, 1, 0, 0 ], [ cos_number, sin_number, 0, 0 ], [ 0, 0, 0, 1 ]]
+
+    for p in list_point:
+        p_matrix = [p[0], p[1], p[2], 1]
+        #result = matrix_Multiplication(p_matrix, const_matrix)
+        new_vertrex = [p[0], p[1]]
+        new_list_point.append(new_vertrex)
+    return new_list_point # return all point for parallel_projection
+
 
 def perspective_projection():  # הטלה פרספקטיבית
     # we need to ask the user for an angle!!
@@ -21,9 +45,7 @@ def scale(p, Sx, Sy, Sz):  # סילום
                                      |0   Sy  0   0|
                                      |0   0   Sz  0|
                                      |0   0   0   1|
-
     The scaling factors, (Sx, Sy, Sz), are positive numbers.
-
     So the equations will be:
     x' = x * Sx
     y' = y * Sy
@@ -49,7 +71,6 @@ def rotate_x_axis(p, theta):  # סיבוב
                                      |             0         cos_theta     sin_theta         0|
                                      |             0         -sin_theta    cos_theta         0|
                                      |             0             0             0             1|
-
     So the equations will be:
     y' = y * cos_theta - z * sin_theta
     z' = y * sin_theta + z * cos_theta
@@ -70,7 +91,6 @@ def rotate_y_axis(p, theta):
                                      |             0             1             0             0|
                                      |         sin_theta         0         cos_theta         0|
                                      |             0             0             0             1|
-
     So the equations will be:
     z' = z * cos_theta - x * sin_theta
     x' = z * sin_theta + x * cos_theta
@@ -91,7 +111,6 @@ def rotate_z_axis(p, theta):
                                      |-sin_theta   cos_theta       0         0|
                                      |     0             0         1         0|
                                      |     0             0         0         1|
-
     So the equations will be:
     x' = x * cos_theta - y * sin_theta
     y' = x * sin_theta + y * cos_theta
