@@ -3,8 +3,21 @@ import numpy as np
 from math import sin, cos
 from Polygon import Vertex, Polygon
 ################# Transformations######################
+<<<<<<< HEAD
 # בהטלות אנחנו תמיד מתייחסים לנקודות ולא לפוליגונים (הבוליגונים לא משתנים אף פעם)
 def parallel_projection(list_point):  # הטלה מקבילית
+=======
+def matrix_Multiplication(matrix1, matrix2):
+    result=[]
+    for j in range(len(matrix2[0])):
+        sum = 0
+        for k in range(len(matrix2)):
+            sum += matrix1[k] * matrix2[k][j]
+        result.append(sum)
+    return result
+
+def parallel_projection(list_polygon, list_point):  # הטלה מקבילית
+>>>>>>> 9a86a34aa9cc2584311505cb3c641327d02a311d
     # note to self: we need to ask the user for an angle!!
     # 90
 
@@ -12,16 +25,25 @@ def parallel_projection(list_point):  # הטלה מקבילית
     cos_number: float = math.cos(90 * (math.pi / 180))
     sin_number: float = math.sin(90 * (math.pi / 180))
 
+<<<<<<< HEAD
     const_matrix = [[ 1, 0, 0, 0 ], [ 0, 1, 0, 0 ], [ cos_number, sin_number, 0, 0 ], [ 0, 0, 0, 1 ]]
 
     for p in list_point:
         p_matrix = [p[0], p[1], p[2], 1]
         result = np.dot(np.array(p_matrix), np.array(const_matrix))
+=======
+    #const_matrix = [[ 1, 0, 0, 0 ], [ 0, 1, 0, 0 ], [ cos_number, sin_number, 0, 0 ], [ 0, 0, 0, 1 ]]
+
+    for p in list_point:
+        p_matrix = [p[0], p[1], p[2], 1]
+        #result = matrix_Multiplication(p_matrix, const_matrix)
+>>>>>>> 9a86a34aa9cc2584311505cb3c641327d02a311d
         new_vertrex = [p[0], p[1]]
         new_list_point.append(new_vertrex)
     return new_list_point # return all point for parallel_projection
 
 
+<<<<<<< HEAD
 def perspective_projection(list_point):  # הטלה פרספקטיבית
     # we need to ask the user for an angle!!
     new_list_point = []
@@ -48,6 +70,14 @@ def oblique_projections(list_point):  # הטלה אלכסונית
         new_vertrex = [p[0], p[1]]
         new_list_point.append(new_vertrex)
     return new_list_point  # return all point for parallel_projection
+=======
+def perspective_projection():  # הטלה פרספקטיבית
+    # we need to ask the user for an angle!!
+    pass
+
+def oblique_projections():  # הטלה אלכסונית
+    # note to self: we need to ask the user for an angle!!
+>>>>>>> 9a86a34aa9cc2584311505cb3c641327d02a311d
     pass
 
 def scale(p, Sx, Sy, Sz):  # סילום
