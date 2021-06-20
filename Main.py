@@ -1,32 +1,24 @@
 import random
 from tkinter import *
-
 from tkinter import filedialog, ttk
-
 from PIL import Image, ImageTk
-
 import Transformations
-
 from Transformations import parallel_projection, oblique_projections, perspective_projection
-
 from Transformations import rotate, scale, hide_show_all_lines
-
 from Polygon import Point, Polygon
 
 list_Polygon = [] # list have all Polygon [class] and each polygon has Point [class]
 
-# Create a window
+# Create the window
 root = Tk()
-root.title("Ex3- 3D in 2D")
+root.title("Ex3- 3D Transformations and Projections")
 
-# width and height will preserve the length and width of your computer screen
+
 width: int = root.winfo_screenwidth()
 height: int = root.winfo_screenheight()
-
-# Gives the window the length and width of the screen
 root.geometry("%dx%d+0+0" % (width, height))
 
-# Open Image
+# Set the background image
 bg = Image.open("images/background.png")
 # Resize Image
 resized = bg.resize((width,height), Image.ANTIALIAS)
@@ -52,24 +44,25 @@ type_Option.set("Title:")
 def deleteAll():
     canvas.delete("all")
     canvas.create_rectangle(canvas_width, canvas_height, 2, 2, outline='blue')
-    #canvas.update()
 
-def random_color():
+
+def random_color():  # we wanted each polygon to be unique :)
     rgbl=[255,0,0]
     random.shuffle(rgbl)
     return tuple(rgbl)
 
 def myDraw(list_poly: list):
+    """Drawing the polygons to the screen using the chosen projection."""
     deleteAll()
     if type_Projection.get() == "Parallel Orthographic":
         list_Polygon = parallel_projection(list_poly)
     elif type_Projection.get() == "Parallel Oblique":
-        list_Polygon = oblique_projections(list_poly) #list_poly
+        list_Polygon = oblique_projections(list_poly)
     else:
         list_Polygon = perspective_projection(list_poly)
 
     for poly in list_Polygon:
-        if not hide_show_all_lines(poly):
+        if not hide_show_all_lines(poly):  # for hiding hidden surfaces
             continue
         p1: Point = poly.getPoint(1)
         p2: Point = poly.getPoint(2)
@@ -88,7 +81,8 @@ def myDraw(list_poly: list):
                                    outline='blue', fill= "#{:06x}".format(random.randint(0, 0xFFFFFF)), width=1)
 
 
-def choose_opction(s: str):
+def choose_option(s: str):
+    """Choosing transformation."""
     if s == "rotate" or s == "scale":
         # for choose [x, y, z]
         label_axis.place(x=1100, y=270)
@@ -141,14 +135,12 @@ def scale():
         print()
     pass
 
-def save_to_file():
-    pass
 
 def create_shape(name,list_polygon, list_point):
     global polygon_table_cube, polygon_table_pyramid
     global vertex_table_cube, vertex_table_pyramid
     if name == 'cube':
-        vertex_table_cube = list_point  #vertex
+        vertex_table_cube = list_point  #point
         polygon_table_cube = list_polygon  # polygon
     else:
         vertex_table_pyramid = list_point # points
@@ -211,8 +203,7 @@ def open_file():
         list_Polygon.append(poly)
 
     # We have now all list
-    myDraw(list_Polygon)
-    pass
+    myDraw(list_Polygon)  # call my draw to draw the polygons to the screen with our choices.
 
 
 
@@ -220,7 +211,7 @@ def ClickMe(event):
     myDraw(list_Polygon)
     print(type_Projection.get())
 
-# Open Image
+# Open Image for "open file" button.
 open_file_btn = Image.open("images/open_file.png")
 # Resize Image
 resized = open_file_btn.resize((70,70), Image.ANTIALIAS)
@@ -230,9 +221,9 @@ button_open_file = Button(root, image= open_file_btn, borderwidth=0,command=lamb
 button_open_file.place(x=10, y=10)
 
 
-label_combobox = Label(root, text = "Choose type to projection:", font='Ariel 12')
+label_combobox = Label(root, text = "Choose projection:", font='Ariel 12')
 label_combobox.place(x=0, y=200)
-
+# Dropdown menu for choosing projection
 combobox_type = ttk.Combobox(root, values=["Parallel Orthographic",
                                            "Parallel Oblique",
                                            "Perspective Projection"], textvariable= type_Projection)
@@ -240,24 +231,23 @@ combobox_type.bind("<<ComboboxSelected>>", ClickMe)
 combobox_type.place(x=15, y=230)
 
 
-# Open Image
+# Open Image for "rotate" button.
 rotate_btn = Image.open("images/rotate.png")
 # Resize Image
 resized = rotate_btn.resize((100,60), Image.ANTIALIAS)
 rotate_btn = ImageTk.PhotoImage(resized)
 
-button_rotate = Button(root, image= rotate_btn, borderwidth=0,command=lambda: choose_opction("rotate"))
+button_rotate = Button(root, image= rotate_btn, borderwidth=0,command=lambda: choose_option("rotate"))
 button_rotate.place(x=15, y=300)
 
-# Open Image
+# Open Image for "scale" button.
 scale_btn = Image.open("images/scale.png")
 # Resize Image
 resized = scale_btn.resize((100,60), Image.ANTIALIAS)
 scale_btn = ImageTk.PhotoImage(resized)
 
-button_scale = Button(root, image= scale_btn, borderwidth=0,command=lambda: choose_opction("scale"))
+button_scale = Button(root, image= scale_btn, borderwidth=0,command=lambda: choose_option("scale"))
 button_scale.place(x=15, y=400)
-
 
 
 label_title_option = Label(root, text = type_Option.get(), font='Ariel 20')
@@ -266,21 +256,35 @@ label_title_option.place(x=1100, y=150)
 label_axis = Label(root, text="Choose axis:", font='Ariel 12')
 combobox_type_axis = ttk.Combobox(root, values=["x", "y","z"], width= 10, textvariable= type_Axis, state='readonly')
 
-label_scale = Label(root, text="Entry number size (to zoom):", font='Ariel 12')
+label_scale = Label(root, text="Enter scale size (to zoom):", font='Ariel 12')
 entry_scale = Entry(root, textvariable= type_Size, width=10, bd=3)
 
-label_angle = Label(root, text="Entry number angle: (0 - 180)", font='Ariel 12')
+label_angle = Label(root, text="Enter angle for rotation: (0 - 180)", font='Ariel 12')
 entry_angle = Entry(root, textvariable= "90", width=10, bd=3)
 
-# Open Image
+# Open Image for 
 ok_btn = Image.open("images/ok.png")
 # Resize Image
 resized = ok_btn.resize((50,50), Image.ANTIALIAS)
 ok_btn = ImageTk.PhotoImage(resized)
 
-button_ok = Button(root, image= ok_btn, borderwidth=0,command=lambda: choose_opction("ok"))
+button_ok = Button(root, image= ok_btn, borderwidth=0,command=lambda: choose_option("ok"))
 
+help_str_1 = "To start, click the top left button to open a file."
+help_text1 = Label(root, text = help_str_1, font='Ariel 12')
+help_text1.place(x=10, y=700)
 
+help_str_2 = "Then, choose the desired projection: oblique, orthographic or perspective."
+help_text2 = Label(root, text = help_str_2, font='Ariel 12')
+help_text2.place(x=10, y=725)
+
+help_str_3 = "To scale the image, enter any value greater than 0 and click 'scale' and then click the green 'v' button."
+help_text3 = Label(root, text = help_str_3, font='Ariel 12')
+help_text3.place(x=10, y=750)
+
+help_str_4 = "To rotate the image, enter the rotation angle (0-180) and the rotation axis (x, y or z) and click the green 'v' button."
+help_text4 = Label(root, text = help_str_4, font='Ariel 12')
+help_text4.place(x=10, y=775)
 
 canvas_width = 800
 canvas_height = 500

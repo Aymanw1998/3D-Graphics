@@ -6,6 +6,7 @@ from ErrorHandler import display_error
 
 
 def distance(list_poly):
+    """For calculating the distance, d, between the viewer and the object."""
     first_x = list_poly[0].getPoint(1).getX()
     first_y = list_poly[0].getPoint(1).getY()
     first_z = list_poly[0].getPoint(1).getZ()
@@ -52,17 +53,21 @@ def distance(list_poly):
             return [dis_x, dis_y, dis_z]
 
 def hide_show_all_lines(poly):
+    """Hide hidden surfaces."""
     p1: Point = poly.getPoint(1)
     p2: Point= poly.getPoint(2)
     p3: Point = poly.getPoint(3)
     p4: Point = poly.getPoint(4)
 
+    # calculating the normal vector
     normal = ((p2.getX() - p1.getX()) * (p1.getY() - p3.getY())) - ((p2.getY() - p1.getY())*(p1.getX() - p3.getX()))
 
     if normal <= 0:
         return True
     return False
-################# Transformations######################
+
+
+################# Projections######################
 def oblique_projections(list_poly: list, angle=40):
     new_list_poly = []
     cos_number: float = math.cos(math.radians(angle))/2
@@ -83,11 +88,10 @@ def oblique_projections(list_poly: list, angle=40):
                     new_list_poly.append(Polygon(list_p[0], list_p[1], list_p[2], list_p[3]))
                 elif i + 1 == 3:
                     new_list_poly.append(Polygon(list_p[0], list_p[1], list_p[2]))
-    return new_list_poly # return all point for parallel_projection
+    return new_list_poly # return all point for oblique_projection
 
 
 def perspective_projection(list_poly):
-
     new_list_poly = []
     temp: int = -400
     for poly in list_poly:
@@ -107,12 +111,11 @@ def perspective_projection(list_poly):
                     new_list_poly.append(Polygon(list_p[0], list_p[1], list_p[2], list_p[3]))
                 elif i + 1 == 3:
                     new_list_poly.append(Polygon(list_p[0], list_p[1], list_p[2]))
-    return new_list_poly  # return all point for parallel_projection
+    return new_list_poly  # return all point for perspective_projection
 
 
 def parallel_projection(list_poly):
     new_list_poly = []
-
     const_matrix = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
 
     for poly in list_poly:
@@ -139,10 +142,6 @@ def scale(list_poly, Sx, Sy, Sz):
                                      |0   0   Sz  0|
                                      |0   0   0   1|
     The scaling factors, (Sx, Sy, Sz), are positive numbers.
-    So the equations will be:
-    x' = x * Sx
-    y' = y * Sy
-    z' = z * Sz
     """
     new_list_poly = []
     if Sx > 0 and Sy > 0 and Sz > 0:
