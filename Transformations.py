@@ -1,86 +1,137 @@
 import math
 import numpy as np
 from math import sin, cos
-from Polygon import Vertex, Polygon
+from Polygon import Point, Polygon
+from ErrorHandler import display_error
+
+
+def distance(list_poly):
+    first_x = list_poly[0].getPoint(1).getX()
+    first_y = list_poly[0].getPoint(1).getY()
+    first_z = list_poly[0].getPoint(1).getZ()
+
+    max_x: float = first_x
+    min_x: float = first_x
+
+    max_y: float = first_y
+    min_y: float = first_y
+
+    max_z: float = first_z
+    min_z: float = first_z
+
+    for poly in list_poly:
+        list_p = []
+        for i in range(len(poly)):
+            p = poly.getPoint(i + 1)
+            x_p = p.getX()
+            y_p = p.getY()
+            z_p = p.getZ()
+
+            # min and max x
+            if x_p < min_x:
+                min_x= x_p
+            if x_p > max_x:
+                max_x= x_p
+
+            # min and max y
+            if y_p < min_y:
+                min_y= y_p
+            if y_p > max_y:
+                max_y= y_p
+
+            # min and max z
+            if z_p < min_z:
+                min_z = z_p
+            if z_p > max_z:
+                max_z = z_p
+
+            dis_x = math.dist([max_x], [min_x])
+            dis_y = math.dist([max_y], [min_y])
+            dis_z = math.dist([max_z], [min_z])
+
+            return [dis_x, dis_y, dis_z]
+
+def hide_show_all_lines(poly):
+    p1: Point = poly.getPoint(1)
+    p2: Point= poly.getPoint(2)
+    p3: Point = poly.getPoint(3)
+    p4: Point = poly.getPoint(4)
+
+    normal = ((p2.getX() - p1.getX()) * (p1.getY() - p3.getY())) - ((p2.getY() - p1.getY())*(p1.getX() - p3.getX()))
+
+    if normal <= 0:
+        return True
+    return False
 ################# Transformations######################
-<<<<<<< HEAD
-# בהטלות אנחנו תמיד מתייחסים לנקודות ולא לפוליגונים (הבוליגונים לא משתנים אף פעם)
-def parallel_projection(list_point):  # הטלה מקבילית
-=======
-def matrix_Multiplication(matrix1, matrix2):
-    result=[]
-    for j in range(len(matrix2[0])):
-        sum = 0
-        for k in range(len(matrix2)):
-            sum += matrix1[k] * matrix2[k][j]
-        result.append(sum)
-    return result
+def parallel_projection(list_poly: list, angle=40):
+    new_list_poly = []
+    cos_number: float = math.cos(math.radians(45))/2
+    sin_number: float = math.sin(math.radians(45))/2
 
-def parallel_projection(list_polygon, list_point):  # הטלה מקבילית
->>>>>>> 9a86a34aa9cc2584311505cb3c641327d02a311d
-    # note to self: we need to ask the user for an angle!!
-    # 90
+    const_matrix = [[1, 0, 0, 0], [0, 1, 0, 0], [cos_number, sin_number, 0, 0], [0, 0, 0, 1]]
 
-    new_list_point = []
-    cos_number: float = math.cos(90 * (math.pi / 180))
-    sin_number: float = math.sin(90 * (math.pi / 180))
-
-<<<<<<< HEAD
-    const_matrix = [[ 1, 0, 0, 0 ], [ 0, 1, 0, 0 ], [ cos_number, sin_number, 0, 0 ], [ 0, 0, 0, 1 ]]
-
-    for p in list_point:
-        p_matrix = [p[0], p[1], p[2], 1]
-        result = np.dot(np.array(p_matrix), np.array(const_matrix))
-=======
-    #const_matrix = [[ 1, 0, 0, 0 ], [ 0, 1, 0, 0 ], [ cos_number, sin_number, 0, 0 ], [ 0, 0, 0, 1 ]]
-
-    for p in list_point:
-        p_matrix = [p[0], p[1], p[2], 1]
-        #result = matrix_Multiplication(p_matrix, const_matrix)
->>>>>>> 9a86a34aa9cc2584311505cb3c641327d02a311d
-        new_vertrex = [p[0], p[1]]
-        new_list_point.append(new_vertrex)
-    return new_list_point # return all point for parallel_projection
+    for poly in list_poly:
+        list_p = []
+        for i in range(len(poly)):
+            p: Point = poly.getPoint(i+1)
+            p_matrix = [p.getX(), p.getY(), p.getZ(), 1]
+            result = np.dot(np.array(p_matrix), np.array(const_matrix))
+            new_p = Point(result[0], result[1], result[2])
+            list_p.append(new_p)
+            if i + 1 == len(poly):
+                if i + 1 == 4:
+                    new_list_poly.append(Polygon(list_p[0], list_p[1], list_p[2], list_p[3]))
+                elif i + 1 == 3:
+                    new_list_poly.append(Polygon(list_p[0], list_p[1], list_p[2]))
+    return new_list_poly # return all point for parallel_projection
 
 
-<<<<<<< HEAD
-def perspective_projection(list_point):  # הטלה פרספקטיבית
-    # we need to ask the user for an angle!!
-    new_list_point = []
-    temp:float = -900
-    for p in list_point:
-        Z = 1 / (1 + (p[2]) / temp)
-        const_matrix = [[Z, 0, 0, 0], [0, Z, 0, 0], [0, 0, 0, 0], [0, 0, 0, 1]]
-        p_matrix = [p[0], p[1], p[2], 1]
-        result = np.dot(np.array(p_matrix), np.array(const_matrix))
-        new_vertrex = [p[0], p[1]]
-        new_list_point.append(new_vertrex)
-    return new_list_point # return all point for parallel_projection
-    pass
+def perspective_projection(list_poly):
 
-def oblique_projections(list_point):  # הטלה אלכסונית
-    # note to self: we need to ask the user for an angle!!
-    new_list_point = []
+    new_list_poly = []
+    temp: int = -400
+    for poly in list_poly:
+        list_p = []
+        for i in range(len(poly)):
+            p: Point = poly.getPoint(i + 1)
+            d = 300
+            Sz= d/(p.getZ()+d)
+            const_matrix = [[Sz, 0, 0, 0], [0, Sz, 0, 0], [0, 0, 0,0], [0, 0, 0, 1]]
+            p_matrix = [p.getX(), p.getY(), p.getZ(), 1]
+            result = np.dot(np.array(p_matrix), np.array(const_matrix))
+            # result = [x,y,z,w]
+            new_p = Point(result[0]/result[3], result[1]/result[3], result[2]/result[3])
+            list_p.append(new_p)
+            if i + 1 == len(poly):
+                if i + 1 == 4:
+                    new_list_poly.append(Polygon(list_p[0], list_p[1], list_p[2], list_p[3]))
+                elif i + 1 == 3:
+                    new_list_poly.append(Polygon(list_p[0], list_p[1], list_p[2]))
+    return new_list_poly  # return all point for parallel_projection
 
-    const_matrix = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 1]]
 
-    for p in list_point:
-        p_matrix = [p[0], p[1], p[2], 1]
-        result = np.dot(np.array(p_matrix), np.array(const_matrix))
-        new_vertrex = [p[0], p[1]]
-        new_list_point.append(new_vertrex)
-    return new_list_point  # return all point for parallel_projection
-=======
-def perspective_projection():  # הטלה פרספקטיבית
-    # we need to ask the user for an angle!!
-    pass
+def oblique_projections(list_poly):
+    new_list_poly = []
 
-def oblique_projections():  # הטלה אלכסונית
-    # note to self: we need to ask the user for an angle!!
->>>>>>> 9a86a34aa9cc2584311505cb3c641327d02a311d
-    pass
+    const_matrix = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
 
-def scale(p, Sx, Sy, Sz):  # סילום
+    for poly in list_poly:
+        list_p = []
+        for i in range(len(poly)):
+            p: Point = poly.getPoint(i + 1)
+            p_matrix = [p.getX(), p.getY(), p.getZ(), 1]
+            result = np.dot(np.array(p_matrix), np.array(const_matrix))
+            new_p = Point(result[0], result[1], result[2])
+            list_p.append(new_p)
+            if i + 1 == len(poly):
+                if i + 1 == 4:
+                    new_list_poly.append(Polygon(list_p[0], list_p[1], list_p[2], list_p[3]))
+                elif i + 1 == 3:
+                    new_list_poly.append(Polygon(list_p[0], list_p[1], list_p[2]))
+    return new_list_poly  # return all points for parallel_projection
+
+
+def scale(list_poly, Sx, Sy, Sz):
     """
     We can perform scaling using the following matrix:
     [x', y', z', 1] = [x, y, z, 1] * |Sx  0   0   0|
@@ -93,100 +144,88 @@ def scale(p, Sx, Sy, Sz):  # סילום
     y' = y * Sy
     z' = z * Sz
     """
+    new_list_poly = []
     if Sx > 0 and Sy > 0 and Sz > 0:
-        x_prime = p.x * Sx
-        y_prime = p.y * Sy
-        z_prime = p.z * Sz
+        dist_x_y_z = distance(list_poly)
+        scale_x = (1 - Sx) * dist_x_y_z[0]
+        scale_y = (1 - Sy) * dist_x_y_z[1]
+        scale_z = (1 - Sz) * dist_x_y_z[2]
+        const_matrix = [[Sx, 0, 0, 0],[0, Sy, 0, 0],[0, 0, Sz, 0],[scale_x, scale_y, scale_z, 1]]
+        for poly in list_poly:
+            list_p = []
+            for i in range(len(poly)):
+                p = poly.getPoint(i+1)
+                p_matrix = [p.getX(), p.getY(), p.getZ(), 1]
+                result = np.dot(np.array(p_matrix), np.array(const_matrix))
+                new_p = Point(result[0], result[1], result[2])
+                list_p.append(new_p)
+                if i + 1 == len(poly):
+                    if i + 1 == 4:
+                        new_list_poly.append(Polygon(list_p[0], list_p[1], list_p[2], list_p[3]))
+                    elif i + 1 == 3:
+                        new_list_poly.append(Polygon(list_p[0], list_p[1], list_p[2]))
+        return new_list_poly
     else:
-        print("Scaling factors must be bigger than 0!!")
-        ############ print error message to GUI!!!!!!!!!!!
+        display_error("Scaling factors must be bigger than 0!!")
+        return list_poly
 
-# def scale_down():
-#     pass
-
-def rotate_x_axis(p, theta):  # סיבוב
-    # note to self: we need to ask the user for an angle!!
+def rotate(polygons_list: list, theta, axis="x"):
     """
-    Theta is the angle of the rotation.
-    We can write the equations of the 3d rotation along the x-axis using the following matrix:
+    We recieve a list of polygons, theta (the rotation angle), and the axis to rotate around.
+    We can express the equations of the 3d rotation along the x-axis using the following matrix:
     [x', y', z', 1] = [x, y, z, 1] * |             1             0             0             0|
                                      |             0         cos_theta     sin_theta         0|
                                      |             0         -sin_theta    cos_theta         0|
                                      |             0             0             0             1|
-    So the equations will be:
-    y' = y * cos_theta - z * sin_theta
-    z' = y * sin_theta + z * cos_theta
-    x' = x
-    """
-    y_prime = p.y * cos(theta) - p.z * sin(theta)
-    z_prime = p.y * sin(theta) + p.z * cos(theta)
-    x_prime = p.x
 
-    transformed_point = Polygon.Vertex(x_prime, y_prime, z_prime)
-    return transformed_point
-
-def rotate_y_axis(p, theta):
-    """
-    Theta is the angle of the rotation.
-    We can write the equations of the 3d rotation along the y-axis using the following matrix:
+    We can express the equations of the 3d rotation along the y-axis using the following matrix:
     [x', y', z', 1] = [x, y, z, 1] * |         cos_theta         0         -sin_theta        0|
                                      |             0             1             0             0|
                                      |         sin_theta         0         cos_theta         0|
                                      |             0             0             0             1|
-    So the equations will be:
-    z' = z * cos_theta - x * sin_theta
-    x' = z * sin_theta + x * cos_theta
-    y' = y
-    """
-    z_prime = p.z * cos(theta) - p.x * sin(theta)
-    x_prime = p.z * sin(theta) + p.x * cos(theta)
-    y_prime = p.y
 
-    transformed_point = Polygon.Vertex(x_prime, y_prime, z_prime)
-    return transformed_point
-
-def rotate_z_axis(p, theta):
-    """
-    Theta is the angle of the rotation.
-    We can write the equations of the 3d rotation along the z-axis using the following matrix:
+    We can express the equations of the 3d rotation along the z-axis using the following matrix:
     [x', y', z', 1] = [x, y, z, 1] * | cos_theta   sin_theta       0         0|
                                      |-sin_theta   cos_theta       0         0|
                                      |     0             0         1         0|
                                      |     0             0         0         1|
-    So the equations will be:
-    x' = x * cos_theta - y * sin_theta
-    y' = x * sin_theta + y * cos_theta
-    z' = z
     """
-    x_prime = p.x * cos(theta) - p.y * sin(theta)
-    y_prime = p.x * sin(theta) + p.y * cos(theta)
-    z_prime = p.z
-
-    transformed_point = Polygon.Vertex(x_prime, y_prime, z_prime)
-    return transformed_point
-
-def remove_hidden_surface():  # הסרת משטחים נסתרים
-    """
-    In a right-hand coordinate system, a vertex in space is considered to be part of the back face if the following equation is true:
-    Ax' + By' + Cz' + D < 0
-    when (x', y', z') is our viewing point.
-    """
-    pass
+    theta = np.radians(theta)
+    rotate_x_axis_matrix = [[1, 0, 0, 0], [0, cos(theta), sin(theta), 0], [0, -sin(theta), cos(theta), 0], [0, 0, 0, 1]]
+    rotate_y_axis_matrix = [[cos(theta), 0, -sin(theta), 0], [0, 1, 0, 0], [sin(theta), 0, cos(theta), 0], [0, 0, 0, 1]]
+    rotate_z_axis_matrix = [[cos(theta), sin(theta), 0, 0], [-sin(theta), cos(theta), 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
 
 
-################## Help functions###############
+    if axis == "x":
+        rotation_matrix = rotate_x_axis_matrix
+    elif axis == "y":
+        rotation_matrix = rotate_y_axis_matrix
+    elif axis == "z":
+        rotation_matrix = rotate_z_axis_matrix
+    else:
+        display_error("Rotation axis can only be 'x' 'y' or 'z'.")
 
-def calculate_visability():  # help function for surface removal
-    """We need to know the visibility of an object to help us remove hidden surfaces."""
-    pass
-
-def calculate_normal_vector():  # help function for surface removal
-    """To perform the visibility calculation in 'calculate_visibility' we must calculate the normal vector."""
-    pass
-
-def sort_by_z():  # so we know which object is the farthest away so we can draw it first
-    # ??????? not sure if it belongs in this file, maybe it should be in view?
-    """The purpose of this method is to arrage the objects by their z-axis value, so we know which object is the farthest away
-    and which is closest to our eyes.
-    The objects will be drawn to the screen by this order: first we draw the farthest object and work our way to the closest one."""
-    pass
+    new_polygons_list = []
+    dist_x_y_z = distance(polygons_list)
+    neg_x = - dist_x_y_z[0]
+    neg_y = - dist_x_y_z[1]
+    neg_z = - dist_x_y_z[2]
+    transitionFix = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [neg_x, neg_y, neg_z, 1]]
+    for poly in polygons_list:
+        list_p = []
+        for i in range(len(poly)):
+            p = poly.getPoint(i + 1)
+            p_matrix = [p.x, p.y, p.z, 1]
+            p_matrix = np.dot(np.array(p_matrix), np.array(transitionFix))
+            p_matrix = np.dot(np.array(p_matrix), np.array(rotation_matrix))
+            p_matrix = np.dot(np.array(p_matrix), np.array(transitionFix))
+            new_p = Point(int(p_matrix[0]), int(p_matrix[1]), int(p_matrix[2]))
+            list_p.append(new_p)
+            if i + 1 == len(poly):
+                if i + 1 == 4:
+                    new_polygons_list.append(
+                        Polygon(list_p[0], list_p[1], list_p[2], list_p[3]))
+                elif i + 1 == 3:
+                    new_polygons_list.append(
+                        Polygon(list_p[0], list_p[1], list_p[2]))
+    return new_polygons_list
