@@ -7,7 +7,7 @@ from Transformations import parallel_projection, oblique_projections, perspectiv
 from Transformations import rotate, scale, hide_show_all_lines
 from Polygon import Point, Polygon
 
-list_Polygon = [] # list have all Polygon [class] and each polygon has Point [class]
+list_Polygon = [] # list of all the polygons we have, each polygon consists of either 3 or 4 points
 
 # Create the window
 root = Tk()
