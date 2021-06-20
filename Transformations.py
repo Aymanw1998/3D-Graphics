@@ -133,8 +133,9 @@ def parallel_projection(list_poly):
                     new_list_poly.append(Polygon(list_p[0], list_p[1], list_p[2]))
     return new_list_poly  # return all points for parallel_projection
 
+########################### Transformations #################################
 
-def scale(list_poly, Sx, Sy, Sz):
+def scale(list_poly, Sx, Sy, Sz):  # here we plan on scaling the object by the same factors everytime so it doesn't get deformed, but in case we want to change it in the future we take all three parameters (x, y, z)
     """
     We can perform scaling using the following matrix:
     [x', y', z', 1] = [x, y, z, 1] * |Sx  0   0   0|
@@ -184,10 +185,10 @@ def rotate(polygons_list: list, theta, axis="x"):
                                      |             0             0             0             1|
 
     We can express the equations of the 3d rotation along the z-axis using the following matrix:
-    [x', y', z', 1] = [x, y, z, 1] * | cos_theta   sin_theta       0         0|
-                                     |-sin_theta   cos_theta       0         0|
-                                     |     0             0         1         0|
-                                     |     0             0         0         1|
+    [x', y', z', 1] = [x, y, z, 1] * |       cos_theta       sin_theta         0             0|
+                                     |      -sin_theta       cos_theta         0             0|
+                                     |             0             0             1             0|
+                                     |             0             0             0             1|
     """
     theta = np.radians(theta)
     rotate_x_axis_matrix = [[1, 0, 0, 0], [0, cos(theta), sin(theta), 0], [0, -sin(theta), cos(theta), 0], [0, 0, 0, 1]]
