@@ -1,104 +1,123 @@
+import random
 from tkinter import *
 
 from tkinter import filedialog, ttk
 
-import time
-
-import math
-
-from math import sqrt
-
-import numpy as np
+from PIL import Image, ImageTk
 
 import Transformations
-from Transformations import parallel_projection,oblique_projections,perspective_projection
 
-from Polygon import Vertex, Polygon
+from Transformations import parallel_projection, oblique_projections, perspective_projection
 
+from Transformations import rotate, scale, hide_show_all_lines
 
-vertex_table_cube = [] #vertex
-polygon_table_cube = [] # polygon
+from Polygon import Point, Polygon
 
-vertex_table_pyramid = None  #vertex
-polygon_table_pyramid = None  # polygon
+list_Polygon = [] # list have all Polygon [class] and each polygon has Point [class]
 
-mousePoints = []
-points = []
-normals = []
+# Create a window
 root = Tk()
-visibilitys=[]
-viewDistance = np.array([0,0,-500])
-root.title("Erez Geva ID:066062712")
-lamda=45
+root.title("Ex3- 3D in 2D")
 
-distance= StringVar()
-distance.set("-500")
+# width and height will preserve the length and width of your computer screen
+width: int = root.winfo_screenwidth()
+height: int = root.winfo_screenheight()
+
+# Gives the window the length and width of the screen
+root.geometry("%dx%d+0+0" % (width, height))
+
+# Open Image
+bg = Image.open("images/background.png")
+# Resize Image
+resized = bg.resize((width,height), Image.ANTIALIAS)
+bg = ImageTk.PhotoImage(resized)
+
+my_label = Label(root, image=bg)
+my_label.place(x=0, y=0, relwidth=1, relheight=1)
 
 mySelect = StringVar()
 myMessage = StringVar()
+
 type_Projection = StringVar()
 type_Projection.set("Parallel Orthographic")
 
-rotateAngle = StringVar()
-rotateAngle.set("0.5")
-rotateAxis = StringVar()
-rotateAxis.set("x")
+type_Axis = StringVar()
+type_Axis.set("x")
 
-scaleSize = StringVar()
-scaleSize.set("2")
+type_Size = StringVar()
+type_Size.set("0")
 
-def setView(s: str):
+type_Option = StringVar()
+type_Option.set("Title:")
+def deleteAll():
+    canvas.delete("all")
+    canvas.create_rectangle(canvas_width, canvas_height, 2, 2, outline='blue')
+    #canvas.update()
+
+def random_color():
+    rgbl=[255,0,0]
+    random.shuffle(rgbl)
+    return tuple(rgbl)
+
+def myDraw(list_poly: list):
+    deleteAll()
+    if type_Projection.get() == "Parallel Orthographic":
+        list_Polygon = parallel_projection(list_poly)
+    elif type_Projection.get() == "Parallel Oblique":
+        list_Polygon = oblique_projections(list_poly) #list_poly
+    else:
+        list_Polygon = perspective_projection(list_poly)
+
+    for poly in list_Polygon:
+        if not hide_show_all_lines(poly):
+            continue
+        p1: Point = poly.getPoint(1)
+        p2: Point = poly.getPoint(2)
+        p3: Point = poly.getPoint(3)
+        p4: Point = poly.getPoint(4)
+        if p4 is not None:
+            canvas.create_polygon([p1.getX() + 400, p1.getY() + 200,
+                                   p2.getX() + 400, p2.getY() + 200,
+                                   p3.getX() + 400, p3.getY() + 200,
+                                   p4.getX() + 400, p4.getY() + 200],
+                                   outline='blue', fill="#{:06x}".format(random.randint(0, 0xFFFFFF)), width=1)
+        else:
+            canvas.create_polygon([p1.getX() + 400, p1.getY() + 200,
+                                   p2.getX() + 400, p2.getY() + 200,
+                                   p3.getX() + 400, p3.getY() + 200],
+                                   outline='blue', fill= "#{:06x}".format(random.randint(0, 0xFFFFFF)), width=1)
+
+
+def choose_opction(s: str):
+    if s == "rotate":
+        type_Option.set("Rotate")
+    else:
+        type_Option.set("Scale")
+
+    label_title_option.config(text= type_Option.get())
     pass
 
-def myDraw(s: str, polygon_table, vertex_table):
-    global polygon_table_cube, polygon_table_pyramid
-    global vertex_table_cube, vertex_table_pyramid
-    if s == "cube" and type_Projection.get() == "Parallel Orthographic":
-        points = parallel_projection(polygon_table, vertex_table)
-        for polygon in polygon_table:
-            if len(polygon) == 4:
-                # points = [[1,2,3],[2,4,5],[5,6,6],[4,5,6]]
-                # polygon= [1,2,4,3]
+def rotate():
+    global list_Polygon
+    try:
+        angle = int(entry_angle.get())
+        if angle < 0 or angle > 180:
+            print()
+        else:
+            list_Polygon = Transformations.rotate(list_Polygon, angle, type_Axis.get())
+            myDraw(list_Polygon)
+    except ValueError as e:
+        print()
+    pass
 
-                p1 = points[polygon[0] - 1]  # 1, 2, 4, 3
-                p2 = points[polygon[1] - 1]
-                p3 = points[polygon[2] - 1]
-                p4 = points[polygon[3] - 1]
-
-                # draw 3D in 2D
-                # את הפוליגון רק על ידי נקודות
-                w.create_polygon([p1[0] + 500, p1[1] + 300,  # x,y
-                                  p2[0] + 500, p2[1] + 300,
-                                  p3[0] + 500, p3[1] + 300,
-                                  p4[0] + 500, p4[1] + 300], outline='blue',
-                                 fill='white', width=1)
-    elif s == "cube" and type_Projection.get() == "Parallel Oblique": pass
-    elif s == "cube" and type_Projection.get() == "Perspective Projection": pass
-
-    if s == "pyramid" and type_Projection.get() == "Parallel Orthographic":
-        points = parallel_projection(polygon_table, vertex_table)
-        for polygon in polygon_table:
-            if len(polygon) == 3:
-                # points = [[1,2,3],[2,4,5],[5,6,6],[4,5,6]]
-                # polygon= [1,2,4,3]
-
-                p1 = points[polygon[0] - 1]  # 1, 2, 4, 3
-                p2 = points[polygon[1] - 1]
-                p3 = points[polygon[2] - 1]
-
-                # draw 3D in 2D
-                # את הפוליגון רק על ידי נקודות
-                w.create_polygon([p1[0] + 500, p1[1] + 300,  # x,y
-                                  p2[0] + 500, p2[1] + 300,
-                                  p3[0] + 500, p3[1] + 300], outline='blue',
-                                 fill='white', width=1)
-    elif s == "pyramid" and type_Projection.get() == "Parallel Oblique":
-        pass
-    elif s == "pyramid" and type_Projection.get() == "Perspective Projection":
-        pass
-
-
-def changeDistance():
+def scale():
+    global list_Polygon
+    try:
+        size = float(entry_scale.get())
+        list_Polygon = Transformations.scale(list_Polygon, size, size, size)
+        myDraw(list_Polygon)
+    except ValueError:
+        print()
     pass
 
 def save_to_file():
@@ -152,81 +171,102 @@ def open_file():
                     list_point_pyramid.append(list_number)
 
     # We have listPolygon and list point
-    # we have create cube and pyramid
-    create_shape("cube", list_polygon_cube,list_point_cube)
-    create_shape("pyramid", list_polygon_pyramid, list_point_pyramid)
-    myDraw("cube",list_polygon_cube,list_point_cube)
-    myDraw("pyramid", list_polygon_pyramid, list_point_pyramid)
+
+    for poligon_cube in list_polygon_cube:
+        p1 = list_point_cube[poligon_cube[0] - 1]  # 1, 2, 4, 3
+        p2 = list_point_cube[poligon_cube[1] - 1]
+        p3 = list_point_cube[poligon_cube[2] - 1]
+        p4 = list_point_cube[poligon_cube[3] - 1]
+        poly = Polygon(Point(p1[0], p1[1], p1[2]),Point(p2[0], p2[1], p2[2]),
+                       Point(p3[0], p3[1], p3[2]),Point(p4[0], p4[1], p4[2]))
+        list_Polygon.append(poly)
+    print(type(list_Polygon[0]))
+    for poligon_pyramid in list_polygon_pyramid:
+        p1 = list_point_pyramid[poligon_pyramid[0] - 1]  # 1, 2, 4, 3
+        p2 = list_point_pyramid[poligon_pyramid[1] - 1]
+        p3 = list_point_pyramid[poligon_pyramid[2] - 1]
+        poly = Polygon(Point(p1[0], p1[1], p1[2]), Point(p2[0], p2[1], p2[2]),
+                       Point(p3[0], p3[1], p3[2]))
+        list_Polygon.append(poly)
+
+    # We have now all list
+    myDraw(list_Polygon)
     pass
 
-def myEvent(event):
-    pass
-
-def myMain(s: str): pass
 
 
-# selectChangeView1 = Button(root, text="Parallel Orthographic", command=lambda: setView("Parallel Orthographic"))
-# selectChangeView1.grid(row=3, column=0)
-#
-# selectChangeView2 = Button(root, text="Parallel Oblique", command=lambda: setView("Parallel Oblique"))
-# selectChangeView2.grid(row=3, column=1)
-#
-# selectChangeView3 = Button(root, text="Perspective Projection", command=lambda: setView("Perspective Projection"))
-# selectChangeView3.grid(row=3, column=2)
+def ClickMe(event):
+    myDraw(list_Polygon)
+    print(type_Projection.get())
+
+# Open Image
+open_file_btn = Image.open("images/open_file.png")
+# Resize Image
+resized = open_file_btn.resize((70,70), Image.ANTIALIAS)
+open_file_btn = ImageTk.PhotoImage(resized)
+
+button_open_file = Button(root, image= open_file_btn, borderwidth=0,command=lambda: open_file())
+button_open_file.place(x=10, y=10)
 
 
-def ClickMe(ss: str):
-    setView(ss)
-    print(ss)
+label_combobox = Label(root, text = "Choose type to projection:", font='Ariel 12')
+label_combobox.place(x=0, y=200)
 
-labelTop = Label(root, text = "Choose type to projection")
-labelTop.grid(row=0,column=0)
-
-comboExample = ttk.Combobox(root, values=["Parallel Orthographic", "Parallel Oblique","Perspective Projection"], textvariable= type_Projection)
-comboExample.grid(row=0, column=1)
-selectRotateB = Button(root, text="Click Me", command=lambda: ClickMe(type_Projection.get()))
-selectRotateB.grid(row=0, column=2)
-
-selectRotateB = Button(root, text="Rotate Shapes  (need axis x/y/z and angle in Radians)", command=lambda: Transformations.rotate_x_axis())
-selectRotateB.grid(row=4, column=0)
-selectRotateL = Label(root, text="Enter Angle in Radiance:")
-selectRotateL.grid(row=4, column=1)
-selectRotateE = Entry(root, textvariable=rotateAngle)
-selectRotateE.grid(row=4, column=2)
-selectRotateL = Label(root, text="Enter Rotate Axis:")
-selectRotateL.grid(row=4, column=3)
-selectRotateE = Entry(root, textvariable=rotateAxis)
-selectRotateE.grid(row=4, column=4)
-
-selectScaleB = Button(root, text="Scale(need point of rafarance and sclae)", command=lambda: Transformations.scale())
-selectScaleB.grid(row=5, column=0)
-selectScaleL = Label(root, text="Enter Scale:")
-selectScaleL.grid(row=5, column=1)
-selectScaleE = Entry(root, textvariable=scaleSize)
-selectScaleE.grid(row=5, column=2)
-
-selectScaleB = Button(root, text="Change View Distance (for perspective play)", command=lambda: changeDistance())
-selectScaleB.grid(row=6, column=0)
-selectScaleL = Label(root, text="Enter Distance:")
-selectScaleL.grid(row=6, column=1)
-selectScaleE = Entry(root, textvariable=distance)
-selectScaleE.grid(row=6, column=2)
+combobox_type = ttk.Combobox(root, values=["Parallel Orthographic", "Parallel Oblique","Perspective Projection"], textvariable= type_Projection)
+combobox_type.bind("<<ComboboxSelected>>", ClickMe)
+combobox_type.place(x=15, y=230)
 
 
-saveB = Button(root, text="file save", command=lambda: save_to_file())
-saveB.grid(row=2, column=4)
+# Open Image
+rotate_btn = Image.open("images/rotate.png")
+# Resize Image
+resized = rotate_btn.resize((100,60), Image.ANTIALIAS)
+rotate_btn = ImageTk.PhotoImage(resized)
 
-openB = Button(root, text="file open", command=lambda: open_file())
-openB.grid(row=2, column=5)
+button_rotate = Button(root, image= rotate_btn, borderwidth=0,command=lambda: rotate())
+button_rotate.place(x=15, y=300)
+
+# Open Image
+scale_btn = Image.open("images/scale.png")
+# Resize Image
+resized = scale_btn.resize((100,60), Image.ANTIALIAS)
+scale_btn = ImageTk.PhotoImage(resized)
+
+button_scale = Button(root, image= scale_btn, borderwidth=0,command=lambda: scale())
+button_scale.place(x=15, y=400)
+
+
+
+label_title_option = Label(root, text = type_Option.get(), font='Ariel 20')
+label_title_option.place(x=1100, y=150)
+
+label_axis = Label(root, text="Choose axis:", font='Ariel 12')
+label_axis.place(x=1100, y=270)
+
+combobox_type_axis = ttk.Combobox(root, values=["x", "y","z"], width= 10, textvariable= type_Axis, state='readonly')
+combobox_type_axis.place(x=1200, y=270)
+
+
+label_axis = Label(root, text="Entry number size:", font='Ariel 12')
+label_axis.place(x=1100, y=370)
+
+entry_scale = Entry(root, textvariable= type_Size, width=10, bd=3)
+entry_scale.place(x=1100, y=400)
+
+label_angle = Label(root, text="Entry number size: (0 - 180)", font='Ariel 12')
+label_angle.place(x=1100, y=470)
+
+entry_angle = Entry(root, textvariable= "90", width=10, bd=3)
+entry_angle.place(x=1100, y=500)
+
+
 
 canvas_width = 800
 canvas_height = 500
 
-w = Canvas(root, width=canvas_width, height=canvas_height)
-w.grid(row=11, columnspan=9, sticky=W)
-w.bind("<Button-1>", myEvent)
-w.create_rectangle(canvas_width, canvas_height, 2, 2, outline='red')
+canvas = Canvas(root, width=canvas_width, height=canvas_height, bg='White')
+canvas.place(x=250, y=100)
+canvas.create_rectangle(canvas_width, canvas_height, 4, 4, outline='blue')
 message = Label(root, textvariable=myMessage)
-message.grid(row=10, columnspan=4, sticky=W)
-root.after(10, myMain(''))
+message.grid(row=10, columnspan=4)
 root.mainloop()
