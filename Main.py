@@ -89,12 +89,33 @@ def myDraw(list_poly: list):
 
 
 def choose_opction(s: str):
-    if s == "rotate":
-        type_Option.set("Rotate")
-    else:
-        type_Option.set("Scale")
+    if s == "rotate" or s == "scale":
+        # for choose [x, y, z]
+        label_axis.place(x=1100, y=270)
+        combobox_type_axis.place(x=1200, y=270)
+        if s == "rotate":
+            type_Option.set("Rotate")
+            label_scale.place(x=-100, y=-100)
+            entry_scale.place(x=-100, y=-100)
+            label_angle.place(x=1100, y=370)
+            entry_angle.place(x=1100, y=400)
+        elif s == "scale":
+            type_Option.set("Scale")
+            label_angle.place(x=-100, y=-100)
+            entry_angle.place(x=-100, y=-100)
+            label_scale.place(x=1100, y=370)
+            entry_scale.place(x=1100, y=400)
 
-    label_title_option.config(text= type_Option.get())
+        label_title_option.config(text= type_Option.get())
+        button_ok.place(x=1200, y=500)
+
+    if s == "ok":
+        if type_Option.get() == "Rotate":
+            rotate()
+        elif type_Option.get() == "Scale":
+            scale()
+
+
     pass
 
 def rotate():
@@ -223,7 +244,7 @@ rotate_btn = Image.open("images/rotate.png")
 resized = rotate_btn.resize((100,60), Image.ANTIALIAS)
 rotate_btn = ImageTk.PhotoImage(resized)
 
-button_rotate = Button(root, image= rotate_btn, borderwidth=0,command=lambda: rotate())
+button_rotate = Button(root, image= rotate_btn, borderwidth=0,command=lambda: choose_opction("rotate"))
 button_rotate.place(x=15, y=300)
 
 # Open Image
@@ -232,7 +253,7 @@ scale_btn = Image.open("images/scale.png")
 resized = scale_btn.resize((100,60), Image.ANTIALIAS)
 scale_btn = ImageTk.PhotoImage(resized)
 
-button_scale = Button(root, image= scale_btn, borderwidth=0,command=lambda: scale())
+button_scale = Button(root, image= scale_btn, borderwidth=0,command=lambda: choose_opction("scale"))
 button_scale.place(x=15, y=400)
 
 
@@ -241,23 +262,21 @@ label_title_option = Label(root, text = type_Option.get(), font='Ariel 20')
 label_title_option.place(x=1100, y=150)
 
 label_axis = Label(root, text="Choose axis:", font='Ariel 12')
-label_axis.place(x=1100, y=270)
-
 combobox_type_axis = ttk.Combobox(root, values=["x", "y","z"], width= 10, textvariable= type_Axis, state='readonly')
-combobox_type_axis.place(x=1200, y=270)
 
-
-label_axis = Label(root, text="Entry number size:", font='Ariel 12')
-label_axis.place(x=1100, y=370)
-
+label_scale = Label(root, text="Entry number size (to zoom):", font='Ariel 12')
 entry_scale = Entry(root, textvariable= type_Size, width=10, bd=3)
-entry_scale.place(x=1100, y=400)
 
-label_angle = Label(root, text="Entry number size: (0 - 180)", font='Ariel 12')
-label_angle.place(x=1100, y=470)
-
+label_angle = Label(root, text="Entry number angle: (0 - 180)", font='Ariel 12')
 entry_angle = Entry(root, textvariable= "90", width=10, bd=3)
-entry_angle.place(x=1100, y=500)
+
+# Open Image
+ok_btn = Image.open("images/ok.png")
+# Resize Image
+resized = ok_btn.resize((50,50), Image.ANTIALIAS)
+ok_btn = ImageTk.PhotoImage(resized)
+
+button_ok = Button(root, image= ok_btn, borderwidth=0,command=lambda: choose_opction("ok"))
 
 
 
