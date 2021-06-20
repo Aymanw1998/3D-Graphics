@@ -233,7 +233,9 @@ button_open_file.place(x=10, y=10)
 label_combobox = Label(root, text = "Choose type to projection:", font='Ariel 12')
 label_combobox.place(x=0, y=200)
 
-combobox_type = ttk.Combobox(root, values=["Parallel Orthographic", "Parallel Oblique","Perspective Projection"], textvariable= type_Projection)
+combobox_type = ttk.Combobox(root, values=["Parallel Orthographic",
+                                           "Parallel Oblique",
+                                           "Perspective Projection"], textvariable= type_Projection)
 combobox_type.bind("<<ComboboxSelected>>", ClickMe)
 combobox_type.place(x=15, y=230)
 

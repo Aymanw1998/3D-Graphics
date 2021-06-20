@@ -63,10 +63,10 @@ def hide_show_all_lines(poly):
         return True
     return False
 ################# Transformations######################
-def parallel_projection(list_poly: list, angle=40):
+def oblique_projections(list_poly: list, angle=40):
     new_list_poly = []
-    cos_number: float = math.cos(math.radians(45))/2
-    sin_number: float = math.sin(math.radians(45))/2
+    cos_number: float = math.cos(math.radians(angle))/2
+    sin_number: float = math.sin(math.radians(angle))/2
 
     const_matrix = [[1, 0, 0, 0], [0, 1, 0, 0], [cos_number, sin_number, 0, 0], [0, 0, 0, 1]]
 
@@ -110,7 +110,7 @@ def perspective_projection(list_poly):
     return new_list_poly  # return all point for parallel_projection
 
 
-def oblique_projections(list_poly):
+def parallel_projection(list_poly):
     new_list_poly = []
 
     const_matrix = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
