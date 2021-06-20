@@ -22,12 +22,6 @@ class Point: # points
     def setZ(self, z):
         self.z = z
 
-# class Edges: #
-#     """An edge represents the line between two vertices."""
-#     def __init__(self, v1, v2) -> None:
-#         self.v1 = v1
-#         self.v2 = v2
-#         pass
 
 class Polygon:
     """A polygon is composed of a number of edges. Since we are dealing with a cube and a pyramid, that number can either be
@@ -58,7 +52,7 @@ class Polygon:
         elif index == 4:
             self.p4 = p
 
-    def __len__(self):
+    def __len__(self):  # so we know if we're dealing with a pyramid or a cube
         if self.p4 is None:
             return 3
         else:
